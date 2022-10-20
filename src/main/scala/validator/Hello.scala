@@ -1,4 +1,4 @@
-package example
+package validator
 
 import cats.effect.{IO, IOApp}
 
