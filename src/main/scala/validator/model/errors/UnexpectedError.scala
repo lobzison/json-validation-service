@@ -1,5 +1,5 @@
 package validator.model.errors
 
-object UnexpectedError extends Error {
+final case class UnexpectedError() extends Error {
   override val description: String = "Unexpected server error"
 }

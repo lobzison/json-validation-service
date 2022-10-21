@@ -1,5 +1,5 @@
 package validator.model.errors
 
-object SchemaAlreadyExists extends Error {
+final case class SchemaAlreadyExists() extends Error {
   override val description: String = "Schema with given id already exists"
 }
