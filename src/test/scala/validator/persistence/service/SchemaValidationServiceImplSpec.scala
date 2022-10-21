@@ -26,7 +26,7 @@ class SchemaValidationServiceImplSpec extends CatsEffectSuite {
     "validateJsonAgainstSchema should return error " +
       "on json that does not validate against the schema"
   ) {
-    val result = for {
+    for {
       schema          <- configJsonSchema
       incorrectConfig <- incorrectConfigJson
       res             <- service.validateJsonAgainstSchema(incorrectConfig, schema)
