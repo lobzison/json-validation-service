@@ -11,7 +11,7 @@ class SchemaValidationServiceImplSpec extends CatsEffectSuite {
   val service = new SchemaValidationServiceImpl[IO]()
 
   test(
-    "validateJsonAgainstSchema should return success " +
+    "validateJsonAgainstSchema must return success " +
       "on json that validates against the schema"
   ) {
     val result = for {
@@ -23,7 +23,7 @@ class SchemaValidationServiceImplSpec extends CatsEffectSuite {
   }
 
   test(
-    "validateJsonAgainstSchema should return error " +
+    "validateJsonAgainstSchema must return error " +
       "on json that does not validate against the schema"
   ) {
     for {
