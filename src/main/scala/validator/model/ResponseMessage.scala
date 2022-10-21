@@ -1,3 +1,3 @@
 package validator.model
 
-case class ResponseMessage(value: String) extends AnyVal
+final case class ResponseMessage(value: String) extends AnyVal
