@@ -4,6 +4,6 @@ import io.circe.Json
 import validator.model.{JsonRaw, JsonSchema, JsonSchemaRaw}
 
 trait JsonParserService[F[_]] {
-  def parseRawJson(raw: JsonRaw): Json
-  def parseRawSchema(raw: JsonSchemaRaw): JsonSchema
+  def parseRawJson(raw: JsonRaw): F[Json]
+  def parseRawSchema(raw: JsonSchemaRaw): F[JsonSchema]
 }
