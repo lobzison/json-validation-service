@@ -9,7 +9,7 @@ import validator.model.{JsonSchemaRaw, SchemaId}
 import validator.persistence.db.TestDB
 import validator.model.errors.SchemaAlreadyExists
 
-class SchemaPersistenceSpec extends CatsEffectSuite {
+class SchemaPersistenceImplSpec extends CatsEffectSuite {
 
   private val persistenceRes =
     TestDB.oneTimeDb().map(xa => new SchemaPersistenceImpl[IO](xa))
@@ -19,8 +19,8 @@ class SchemaPersistenceSpec extends CatsEffectSuite {
       assertIO(persistence.get(testSchemaId1), None)
     }
   }
-  test("get must return Some if there is a row") {
 
+  test("get must return Some if there is a row") {
     TestDB.oneTimeDb().use { xa =>
       val persistence = new SchemaPersistenceImpl[IO](xa)
       val result = {
@@ -85,5 +85,5 @@ class SchemaPersistenceSpec extends CatsEffectSuite {
   }
 
   private def insert(id: SchemaId, schema: JsonSchemaRaw): ConnectionIO[Int] =
-    fr"insert into json_schema(schema_id, body) values ($id, $schema)".update.run
+    fr"insert into json_schema(schema_id, body) values (${id.value}, ${schema.value})".update.run
 }
