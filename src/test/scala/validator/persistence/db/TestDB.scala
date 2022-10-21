@@ -19,8 +19,8 @@ object TestDB {
   private def cleanUpDBOnClose(name: UUID) = Resource.make(IO(fileName(name))) { name =>
     for {
       filePath <- IO(Paths.get(name))
-      res      <- IO(Files.deleteIfExists(filePath))
-    } yield res
+      _        <- IO(Files.deleteIfExists(filePath))
+    } yield ()
   }
 
   def fly4sRes(name: UUID): Resource[IO, Fly4s[IO]] = Fly4s.make[IO](

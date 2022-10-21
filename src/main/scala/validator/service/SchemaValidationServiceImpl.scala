@@ -1,8 +1,44 @@
 package validator.service
+import cats.Applicative
+import com.github.fge.jsonschema.core.report.ProcessingReport
+import com.github.fge.jsonschema.main.{JsonSchemaFactory, JsonSchema => LibraryJsonSchema}
 import io.circe.Json
-import validator.model.{JsonSchema, ValidationReport}
+import io.circe.jackson.circeToJackson
+import validator.model.{Status, ValidationMessage, ValidationReport, JsonSchema => LocalJsonSchema}
 
-class SchemaValidationServiceImpl[F[_]] extends SchemaValidationService[F] {
-  override def validateJsonAgainstSchema(json: Json, schema: JsonSchema): F[ValidationReport] =
-    ???
+import scala.jdk.CollectionConverters._
+
+class SchemaValidationServiceImpl[F[_]: Applicative] extends SchemaValidationService[F] {
+  override def validateJsonAgainstSchema(
+      json: Json,
+      schema: LocalJsonSchema
+  ): F[ValidationReport] = {
+    val validator = buildValidator(schema)
+    val result    = validator.validate(circeToJackson(json.deepDropNullValues))
+    Applicative[F].pure(convertReport(result))
+  }
+
+  private def buildValidator(schema: LocalJsonSchema): LibraryJsonSchema =
+    JsonSchemaFactory.byDefault.getJsonSchema(circeToJackson(schema.value))
+
+  private def convertReport(report: ProcessingReport): ValidationReport = {
+    val status = Status.fromBoolean(report.isSuccess)
+
+    val message =
+      status match {
+        case Status.Success => None
+        case Status.Error =>
+          Some(
+            ValidationMessage(
+              report
+                .iterator()
+                .asScala
+                .map(_.getMessage)
+                .mkString("\n")
+            )
+          )
+      }
+    ValidationReport(status, message)
+  }
+
 }

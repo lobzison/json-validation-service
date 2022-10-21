@@ -10,15 +10,19 @@ lazy val dbDependencies = Seq(
   Database.flyway
 )
 
+lazy val jsonDependencies = Seq(
+  Json.jsonSchemaValidator,
+  Json.circe,
+  Json.circeParser,
+  Json.circeJackson
+)
+
 lazy val root = (project in file("."))
   .settings(
     name := "json-validation-service",
     libraryDependencies := Seq(
       ce,
-      jsonSchemaValidator,
-      tapir,
-      circe,
-      circeParser,
       munit % Test
-    ) ++ dbDependencies
+    ) ++ jsonDependencies
+      ++ dbDependencies
   )
