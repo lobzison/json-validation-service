@@ -18,7 +18,7 @@ lazy val root = (project in file("."))
       jsonSchemaValidator,
       tapir,
       circe,
-      circeParser,
-      munit % Test
+      circeParser % Test,
+      munit       % Test
     ) ++ dbDependencies
   )
