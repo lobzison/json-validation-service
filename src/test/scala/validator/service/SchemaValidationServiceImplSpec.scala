@@ -1,4 +1,4 @@
-package validator.persistence.service
+package validator.service
 
 import cats.effect.IO
 import munit.CatsEffectSuite
