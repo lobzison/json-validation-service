@@ -2,7 +2,6 @@ package validator.service
 
 import cats.effect.IO
 import munit.CatsEffectSuite
-import validator.service.SchemaValidationServiceImpl
 import validator.Fixtures._
 import validator.model.{Status, ValidationReport}
 

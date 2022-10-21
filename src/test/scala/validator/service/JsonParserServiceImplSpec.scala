@@ -4,7 +4,6 @@ import cats.effect.IO
 import munit.CatsEffectSuite
 import validator.Fixtures._
 import validator.model.errors.InvalidJson
-import validator.service.JsonParserServiceImpl
 
 class JsonParserServiceImplSpec extends CatsEffectSuite {
   val service = new JsonParserServiceImpl[IO]
