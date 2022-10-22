@@ -1,5 +1,5 @@
 package validator.model.errors
 
-trait Error extends Throwable {
+trait ServiceError extends Throwable {
   val description: String
 }
