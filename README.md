@@ -22,12 +22,16 @@ Default choice would be PostgreSQL, but since it's an exercise - SQLite will be 
 It has an advantage of easier setup, without usage of Docker. It can be swapped for PostgreSQL without much effort later.
 
 ### HTTP server
-Tapir for endpoint description and documentation generation, http4s with Ember as a backend
+~~Tapir for endpoint description and documentation generation, http4s with Ember as a backend~~
+Tapir requires to write both encoders and decoders, since they generate both server and client. 
+They also require a `Schema`, that in theory can be derived, but does not work out of the box with some cases.
+Handling of error cases is also complicating the tapir setup.
+
+In the end I've gone with the vanilla http4s server with Ember implementation
 
 ### JSON
 This is tricky. We are already committed to the validation library, and the library uses Jackson as it's json model.
-But since we want to use Tapir for auto documentation - we need to use a supported library, and Jackson is not one of them.
-The planned solution is to use circe and circe-jackson to convert between models.
+The planned solution is to use circe as main model and circe-jackson to convert between models in a single class.
 
 ## Design challenges
 Error handling is challenging. 
