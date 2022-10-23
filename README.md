@@ -5,7 +5,8 @@ Requirements to run:
 - Java 11+
 - Permissions to use port, create/delete files in the repo directory for user
 
-`./sbtx run` to start the server. By default, it's serving on `localhost:8080`, port can be changed in the [application.conf](./src/main/resources/application.conf).
+
+`./sbtx test` to run tests `./sbtx run` to start the server. By default, it's serving on `localhost:8080`, port can be changed in the [application.conf](./src/main/resources/application.conf).
 
 Example call: `curl -v http://localhost:8080/schema/my-schema -X GET`
 
