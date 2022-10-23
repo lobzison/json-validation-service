@@ -20,7 +20,7 @@ class TestDBSpec extends CatsEffectSuite {
         val result = fr"select 1".query[Int].option.transact(xa)
         assertIO(result, Some(1))
       }
-      _ <- assertIOBoolean(notExists(TestDB.fileName(id)))
+      _ <- assertIOBoolean(notExists(TestDB.fileName(id.toString)))
     } yield ()
 
   }

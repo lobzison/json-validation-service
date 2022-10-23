@@ -13,7 +13,7 @@ class DBImpl[F[_]: Async] extends DB[F] {
   protected val password = ""
   protected val name     = "json-schemas".pure[F]
 
-  protected def fileName(name: String) = s"$name.db"
+  def fileName(name: String) = s"$name.db"
 
   protected def url(name: String) = s"jdbc:sqlite:${fileName(name)}"
 

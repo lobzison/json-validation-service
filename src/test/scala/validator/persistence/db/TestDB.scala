@@ -3,8 +3,6 @@ import cats.effect.std.UUIDGen
 import cats.effect.{IO, Resource}
 import doobie._
 import doobie.hikari.HikariTransactor
-import fly4s.core._
-import fly4s.core.data._
 
 import java.nio.file.{Files, Paths}
 import java.util.UUID

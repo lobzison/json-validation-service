@@ -1,5 +1,6 @@
 package validator.service
 import cats.Applicative
+import cats.implicits.catsSyntaxApplicativeId
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.main.{JsonSchemaFactory, JsonSchema => LibraryJsonSchema}
 import io.circe.Json
@@ -15,7 +16,7 @@ class SchemaValidationServiceImpl[F[_]: Applicative] extends SchemaValidationSer
   ): F[ValidationReport] = {
     val validator = buildValidator(schema)
     val result    = validator.validate(circeToJackson(json.deepDropNullValues))
-    Applicative[F].pure(convertReport(result))
+    convertReport(result).pure[F]
   }
 
   private def buildValidator(schema: LocalJsonSchema): LibraryJsonSchema =

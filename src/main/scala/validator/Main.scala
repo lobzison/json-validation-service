@@ -4,7 +4,7 @@ import cats.effect.{IO, IOApp}
 import doobie.Transactor
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
-import validator.api.{Routes, RoutesImpl}
+import validator.api.{ErrorHandler, Routes, RoutesImpl}
 import validator.persistence._
 import validator.persistence.db.DBImpl
 import validator.service._
@@ -23,7 +23,8 @@ object Main extends IOApp.Simple {
 
     val service: Service[IO] = new ServiceImpl[IO](persistence, parsing, validation)
 
-    val routes: Routes[IO] = new RoutesImpl[IO](service)
+    val errorHandler: ErrorHandler[IO] = new ErrorHandler[IO]
+    val routes: Routes[IO]             = new RoutesImpl[IO](service, errorHandler)
 
     EmberServerBuilder
       .default[IO]
