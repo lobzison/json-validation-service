@@ -22,7 +22,7 @@ class SchemaValidationServiceImpl[F[_]: Applicative] extends SchemaValidationSer
     JsonSchemaFactory.byDefault.getJsonSchema(circeToJackson(schema.value))
 
   private def convertReport(report: ProcessingReport): ValidationReport = {
-    val status = Status.fromBoolean(report.isSuccess)
+    val status = Status.fromBoolean(isSuccess = report.isSuccess)
 
     val message =
       status match {

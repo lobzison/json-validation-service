@@ -1,5 +1,7 @@
 package validator.model
 
+import io.circe.Encoder
+
 sealed trait Status
 
 object Status {
@@ -8,4 +10,10 @@ object Status {
 
   def fromBoolean(isSuccess: Boolean): Status =
     if (isSuccess) Success else Error
+
+  implicit val statusEncoder: Encoder[Status] =
+    Encoder.encodeString.contramap {
+      case Success => "success"
+      case Error   => "error"
+    }
 }
