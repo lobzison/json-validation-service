@@ -4,7 +4,7 @@ import cats.implicits._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{HttpRoutes, Response}
-import validator.model.errors.ServiceError
+import validator.model.errors.{NotFoundError, ServiceError}
 import validator.model._
 import validator.service.Service
 
@@ -12,8 +12,6 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
     extends Routes[F]
     with Http4sDsl[F] {
 
-  // TODO: Add correct code matches on EndpointResponse
-  // TODO: Add error handling or the error channel
   // TODO: Add custom 404
 
   override def routes: HttpRoutes[F] =
@@ -43,6 +41,7 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
           res              <- calculateResponseCode(validationReport)
         } yield res)
           .handleErrorWith(errorHandler.handleErrors)
+      case _ => notFound.pure[F]
     }
 
   private def calculateResponseCode(result: EndpointResponse): F[Response[F]] =
@@ -56,4 +55,7 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
       case _ =>
         InternalServerError()
     }
+
+  override val notFound: Response[F] =
+    Response[F](status = NotFound).withEntity(NotFoundError(): ServiceError)
 }

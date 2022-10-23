@@ -231,7 +231,7 @@ class RoutesImplSpec extends CatsEffectSuite {
   }
 
   test("Routes that does not match should return a valid json") {
-    val expectedResponse: ServiceError = errors.NotFound()
+    val expectedResponse: ServiceError = errors.NotFoundError()
 
     val routes =
       new RoutesImpl[IO](Mocks.Service.failing(expectedResponse), errorHandler)

@@ -28,7 +28,10 @@ object Main extends IOApp.Simple {
 
     EmberServerBuilder
       .default[IO]
-      .withHttpApp(Router("/" -> routes.routes).orNotFound)
+      .withHttpApp(
+        Router("/" -> routes.routes)
+          .mapF(_.getOrElse(routes.notFound))
+      )
       .build
       .useForever
   }
