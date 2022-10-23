@@ -1,9 +1,9 @@
 package validator.persistence
 import cats.effect.MonadCancelThrow
 import cats.implicits._
+import doobie.free.connection
 import doobie.implicits._
 import doobie.util.transactor.Transactor
-import org.sqlite.SQLiteException
 import validator.model.errors.SchemaAlreadyExists
 import validator.model.{JsonSchemaRaw, SchemaId}
 
@@ -13,16 +13,14 @@ class SchemaPersistenceImpl[F[_]: MonadCancelThrow](xa: Transactor[F])
   override def get(schemaId: SchemaId): F[Option[JsonSchemaRaw]] =
     getQuery(schemaId).query[JsonSchemaRaw].option.transact(xa)
 
-  override def create(schemaId: SchemaId, schemaBody: JsonSchemaRaw): F[Unit] =
-    insertQuery(schemaId, schemaBody).update.run
-      .transact(xa)
-      .void
-      .adaptError {
-        // Adapting SQLite unique constraint violation into domain error
-        // https://www.sqlite.org/rescode.html#constraint_unique for the error code
-        case e: SQLiteException if e.getResultCode.code === 2067 =>
-          SchemaAlreadyExists()
-      }
+  override def create(schemaId: SchemaId, schemaBody: JsonSchemaRaw): F[Unit] = {
+    (for {
+      existing <- getQuery(schemaId).query[JsonSchemaRaw].option
+      _ <- existing.fold(insertQuery(schemaId, schemaBody).update.run.void)(_ =>
+        connection.raiseError[Unit](SchemaAlreadyExists())
+      )
+    } yield ()).transact(xa)
+  }
 
   private def getQuery(schemaId: SchemaId) =
     fr"""
