@@ -1,7 +1,7 @@
 package validator.api
 
-import sttp.tapir.server.ServerEndpoint
+import org.http4s.HttpRoutes
 
 trait Routes[F[_]] {
-  def routes: List[ServerEndpoint[Any, F]]
+  def routes: HttpRoutes[F]
 }

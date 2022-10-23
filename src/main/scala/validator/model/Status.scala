@@ -3,9 +3,9 @@ package validator.model
 import enumeratum.EnumEntry.LowerCamelcase
 import enumeratum.{CirceEnum, Enum, EnumEntry}
 
-sealed trait Status extends EnumEntry
+sealed trait Status extends EnumEntry with LowerCamelcase
 
-object Status extends Enum[Status] with CirceEnum[Status] with LowerCamelcase {
+object Status extends Enum[Status] with CirceEnum[Status] {
 
   val values = findValues
 

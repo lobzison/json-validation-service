@@ -1,6 +1,8 @@
 package validator.model
 
-import io.circe.Codec
+import io.circe.Encoder
+import org.http4s.EntityEncoder
+import org.http4s.circe.jsonEncoderOf
 import validator.model.errors.ServiceError
 
 final case class EndpointResponse(
@@ -11,9 +13,15 @@ final case class EndpointResponse(
 )
 
 object EndpointResponse {
+  implicit val endpointResponseEncoder: Encoder[EndpointResponse] = {
+    val encoder: Encoder[EndpointResponse] =
+      Encoder
+        .forProduct4("action", "id", "status", "message") { er =>
+          (er.action, er.schemaId, er.status, er.message.map(_.description))
+        }
+    encoder.mapJson(_.deepDropNullValues)
+  }
 
-  implicit val endpointResponseCodec =
-    Codec.forProduct4("action", "id", "status", "message")(EndpointResponse.apply) { er =>
-      (er.action, er.schemaId, er.status, er.message)
-    }
+  implicit def endpointResponseEntityEncoder[F[_]]: EntityEncoder[F, EndpointResponse] =
+    jsonEncoderOf[EndpointResponse]
 }

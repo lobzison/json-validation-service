@@ -21,25 +21,21 @@ object Dependencies {
   }
 
   object Http {
-    lazy val tapir = "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % Versions.tapirVersion
-    lazy val http4sBazeServer = "org.http4s" %% "http4s-blaze-server" % "0.23.12"
-    lazy val tapirOpenApi =
-      "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapirVersion
-    lazy val tapirCirce =
-      "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Versions.tapirVersion
+    lazy val http4sEmberServer = "org.http4s" %% "http4s-ember-server" % Versions.httpVersion
+    lazy val http4sDsl         = "org.http4s" %% "http4s-dsl"          % Versions.httpVersion
+    lazy val http4sCirce       = "org.http4s" %% "http4s-circe"        % Versions.httpVersion
   }
 
   object Versions {
     lazy val doobieVersion = "1.0.0-RC2"
     lazy val circeVersion  = "0.14.3"
-    lazy val tapirVersion  = "1.1.3"
+    lazy val httpVersion   = "1.0.0-M37"
   }
 
   lazy val httpDependencies = Seq(
-    Http.tapir,
-    Http.http4sBazeServer,
-    Http.tapirCirce,
-    Http.tapirOpenApi
+    Http.http4sEmberServer,
+    Http.http4sDsl,
+    Http.http4sCirce
   )
 
   lazy val dbDependencies = Seq(
