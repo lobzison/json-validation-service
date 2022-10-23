@@ -1,6 +1,7 @@
 package validator
 
 import cats.effect.{IO, IOApp}
+import com.comcast.ip4s.Port
 import doobie.Transactor
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
@@ -28,6 +29,7 @@ object Main extends IOApp.Simple {
 
     EmberServerBuilder
       .default[IO]
+      .withPort(Port.fromInt(80).get)
       .withHttpApp(
         Router("/" -> routes.routes)
           .mapF(_.getOrElse(routes.notFound))
