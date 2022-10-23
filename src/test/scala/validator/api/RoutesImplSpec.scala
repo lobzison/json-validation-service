@@ -1,12 +1,13 @@
 package validator.api
 
-import cats.effect.IO
+import cats.effect.{IO, Sync}
 import io.circe.syntax.EncoderOps
 import munit.CatsEffectSuite
 import org.http4s.Method._
 import org.http4s.Request
 import org.http4s.Status.{BadRequest, Conflict, Created, InternalServerError, NotFound, Ok}
 import org.http4s.implicits.http4sLiteralsSyntax
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import validator.Mocks
 import validator.model._
 import validator.Fixtures._
@@ -18,8 +19,10 @@ import validator.model.errors.{
   UnexpectedError,
   ValidationDidntPass
 }
+import cats.implicits._
 
 class RoutesImplSpec extends CatsEffectSuite {
+  implicit def unsafeLogger[F[_]: Sync] = Slf4jLogger.getLogger[F]
 
   case class MissingResponse() extends Throwable
 

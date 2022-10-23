@@ -2,11 +2,8 @@ import sbt._
 
 object Dependencies {
 
-  lazy val munit = "org.typelevel" %% "munit-cats-effect-3" % "1.0.7"
   lazy val ce    = "org.typelevel" %% "cats-effect"         % "3.3.14"
-  lazy val pureconfigCats =
-    "com.github.pureconfig" %% "pureconfig-cats-effect" % Versions.pureconfigVersion
-  lazy val pureconfig = "com.github.pureconfig" %% "pureconfig" % Versions.pureconfigVersion
+  lazy val munit = "org.typelevel" %% "munit-cats-effect-3" % "1.0.7"
 
   object Database {
     lazy val sqlite       = "org.xerial"          % "sqlite-jdbc"   % "3.39.3.0"
@@ -27,6 +24,14 @@ object Dependencies {
     lazy val http4sEmberServer = "org.http4s" %% "http4s-ember-server" % Versions.httpVersion
     lazy val http4sDsl         = "org.http4s" %% "http4s-dsl"          % Versions.httpVersion
     lazy val http4sCirce       = "org.http4s" %% "http4s-circe"        % Versions.httpVersion
+  }
+
+  object Misc {
+    lazy val pureconfigCats =
+      "com.github.pureconfig" %% "pureconfig-cats-effect" % Versions.pureconfigVersion
+    lazy val pureconfig = "com.github.pureconfig" %% "pureconfig"      % Versions.pureconfigVersion
+    lazy val log4cats   = "org.typelevel"         %% "log4cats-slf4j"  % "2.5.0"
+    lazy val logback    = "ch.qos.logback"         % "logback-classic" % "1.4.4"
   }
 
   object Versions {
@@ -55,6 +60,13 @@ object Dependencies {
     Json.circeParser,
     Json.circeJackson,
     Json.enumeratumCirce
+  )
+
+  lazy val miscDependencies = Seq(
+    Misc.log4cats,
+    Misc.logback,
+    Misc.pureconfig,
+    Misc.pureconfigCats
   )
 
 }
