@@ -23,15 +23,7 @@ class ServiceImplSpec extends CatsEffectSuite {
       Mocks.Validation.successfulParsing()
     )
 
-    for {
-      res <- service.createSchema(testSchemaId1, testSchemaRaw1)
-      _ = assert(res.status == Status.Error)
-      _ = assert(res.message match {
-        case Some(_: InvalidJson) => true
-        case _                    => false
-      })
-      _ = assert(res.action == ActionType.UploadSchema)
-    } yield ()
+    interceptIO[InvalidJson](service.createSchema(testSchemaId1, testSchemaRaw1))
   }
 
   test(
@@ -44,15 +36,7 @@ class ServiceImplSpec extends CatsEffectSuite {
       Mocks.Validation.successfulParsing()
     )
 
-    for {
-      res <- service.createSchema(testSchemaId1, testSchemaRaw1)
-      _ = assert(res.status == Status.Error)
-      _ = assert(res.message match {
-        case Some(_: SchemaAlreadyExists) => true
-        case _                            => false
-      })
-      _ = assert(res.action == ActionType.UploadSchema)
-    } yield ()
+    interceptIO[SchemaAlreadyExists](service.createSchema(testSchemaId1, testSchemaRaw1))
   }
 
   test(
@@ -115,15 +99,7 @@ class ServiceImplSpec extends CatsEffectSuite {
       Mocks.Parsing.successfulParsing(testJson1),
       Mocks.Validation.successfulParsing()
     )
-    for {
-      res <- service.validateJsonAgainstSchema(testJsonRaw1, testSchemaId1)
-      _ = assert(res.status == Status.Error)
-      _ = assert(res.message match {
-        case Some(_: SchemaNotFound) => true
-        case _                       => false
-      })
-      _ = assert(res.action == ActionType.ValidateDocument)
-    } yield ()
+    interceptIO[SchemaNotFound](service.validateJsonAgainstSchema(testJsonRaw1, testSchemaId1))
   }
 
   test(
@@ -135,15 +111,7 @@ class ServiceImplSpec extends CatsEffectSuite {
       Mocks.Parsing.failingParsing,
       Mocks.Validation.successfulParsing()
     )
-    for {
-      res <- service.validateJsonAgainstSchema(testJsonRaw1, testSchemaId1)
-      _ = assert(res.status == Status.Error)
-      _ = assert(res.message match {
-        case Some(_: InvalidJson) => true
-        case _                    => false
-      })
-      _ = assert(res.action == ActionType.ValidateDocument)
-    } yield ()
+    interceptIO[InvalidJson](service.validateJsonAgainstSchema(testJsonRaw1, testSchemaId1))
   }
 
   test(

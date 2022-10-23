@@ -21,7 +21,7 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
           schemaString <- r.as[String]
           schemaRaw = JsonSchemaRaw(schemaString)
           response <- service.createSchema(schemaId, schemaRaw)
-          res      <- calculateResponseCode(response)
+          res      <- Created(response)
         } yield res)
           .handleErrorWith(errorHandler.handleErrors)
 
@@ -39,23 +39,11 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
           jsonString <- r.as[String]
           jsonRaw = JsonRaw(jsonString)
           validationReport <- service.validateJsonAgainstSchema(jsonRaw, schemaId)
-          res              <- calculateResponseCode(validationReport)
+          res              <- Ok(validationReport)
         } yield res)
           .handleErrorWith(errorHandler.handleErrors)
 
       case _ => notFound.pure[F]
-    }
-
-  private def calculateResponseCode(result: EndpointResponse): F[Response[F]] =
-    (result.message, result.action) match {
-      case (Some(e: ServiceError), _) =>
-        Response[F](status = e.httpCode).withEntity(e).pure[F]
-      case (None, ActionType.UploadSchema) =>
-        Created(result)
-      case (None, ActionType.ValidateDocument) =>
-        Ok(result)
-      case _ =>
-        InternalServerError()
     }
 
   override val notFound: Response[F] =

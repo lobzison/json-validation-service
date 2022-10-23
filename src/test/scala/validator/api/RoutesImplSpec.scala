@@ -8,18 +8,10 @@ import org.http4s.Request
 import org.http4s.Status.{BadRequest, Conflict, Created, InternalServerError, NotFound, Ok}
 import org.http4s.implicits.http4sLiteralsSyntax
 import org.typelevel.log4cats.slf4j.Slf4jLogger
+import validator.Fixtures._
 import validator.Mocks
 import validator.model._
-import validator.Fixtures._
-import validator.model.errors.{
-  InvalidJson,
-  SchemaAlreadyExists,
-  SchemaNotFound,
-  ServiceError,
-  UnexpectedError,
-  ValidationDidntPass
-}
-import cats.implicits._
+import validator.model.errors._
 
 class RoutesImplSpec extends CatsEffectSuite {
   implicit def unsafeLogger[F[_]: Sync] = Slf4jLogger.getLogger[F]
@@ -50,13 +42,7 @@ class RoutesImplSpec extends CatsEffectSuite {
   }
 
   test("POST /schema/:id must return 409 and body on schema already exists") {
-    val expectedResponse =
-      EndpointResponse(
-        ActionType.UploadSchema,
-        testSchemaId1,
-        Status.Error,
-        Some(SchemaAlreadyExists())
-      )
+    val expectedResponse: ServiceError = SchemaAlreadyExists()
     val routes =
       new RoutesImpl[IO](Mocks.Service.failing(SchemaAlreadyExists()), errorHandler)
 
@@ -76,7 +62,7 @@ class RoutesImplSpec extends CatsEffectSuite {
       UnexpectedError()
     val error = new Throwable("DB gone 🔥🔥🔥")
     val routes =
-      new RoutesImpl[IO](Mocks.Service.failingHard(error), errorHandler)
+      new RoutesImpl[IO](Mocks.Service.failing(error), errorHandler)
 
     val request = Request[IO](method = POST, uri = baseUrl / "schema" / testSchemaId1.value)
 
@@ -184,16 +170,10 @@ class RoutesImplSpec extends CatsEffectSuite {
   }
 
   test("POST /validate/:id must return 404 and a message when schema does not exist") {
-    val expectedResponse =
-      EndpointResponse(
-        ActionType.ValidateDocument,
-        testSchemaId1,
-        Status.Error,
-        Some(SchemaNotFound())
-      )
+    val expectedResponse: ServiceError = SchemaNotFound()
     val routes =
       new RoutesImpl[IO](
-        Mocks.Service.successful(expectedResponse, expectedResponse, testSchema1),
+        Mocks.Service.failing(expectedResponse),
         errorHandler
       )
 
@@ -209,16 +189,10 @@ class RoutesImplSpec extends CatsEffectSuite {
   }
 
   test("POST /validate/:id must return 400 and a message if json passed is invalid") {
-    val expectedResponse =
-      EndpointResponse(
-        ActionType.ValidateDocument,
-        testSchemaId1,
-        Status.Error,
-        Some(InvalidJson(new Throwable()))
-      )
+    val expectedResponse: ServiceError = InvalidJson(new Throwable())
     val routes =
       new RoutesImpl[IO](
-        Mocks.Service.successful(expectedResponse, expectedResponse, testSchema1),
+        Mocks.Service.failing(expectedResponse),
         errorHandler
       )
 
