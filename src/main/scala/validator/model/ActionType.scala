@@ -1,17 +1,16 @@
 package validator.model
 
-import io.circe.Encoder
+import enumeratum.EnumEntry.LowerCamelcase
+import enumeratum._
 
-sealed trait ActionType
+sealed trait ActionType extends EnumEntry
 
-object ActionType {
+object ActionType extends Enum[ActionType] with CirceEnum[ActionType] with LowerCamelcase {
+
+  val values = findValues
+
   case object UploadSchema extends ActionType
 
   case object ValidateDocument extends ActionType
 
-  implicit val actionTypeEncoder: Encoder[ActionType] =
-    Encoder.encodeString.contramap {
-      case UploadSchema     => "uploadSchema"
-      case ValidateDocument => "validateDocument"
-    }
 }

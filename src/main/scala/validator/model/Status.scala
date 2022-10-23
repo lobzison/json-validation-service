@@ -1,19 +1,17 @@
 package validator.model
 
-import io.circe.Encoder
+import enumeratum.EnumEntry.LowerCamelcase
+import enumeratum.{CirceEnum, Enum, EnumEntry}
 
-sealed trait Status
+sealed trait Status extends EnumEntry
 
-object Status {
+object Status extends Enum[Status] with CirceEnum[Status] with LowerCamelcase {
+
+  val values = findValues
+
   final case object Success extends Status
   final case object Error   extends Status
 
   def fromBoolean(isSuccess: Boolean): Status =
     if (isSuccess) Success else Error
-
-  implicit val statusEncoder: Encoder[Status] =
-    Encoder.encodeString.contramap {
-      case Success => "success"
-      case Error   => "error"
-    }
 }

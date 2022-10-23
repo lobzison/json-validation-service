@@ -1,6 +1,6 @@
 package validator.model
 
-import io.circe.Encoder
+import io.circe.Codec
 import validator.model.errors.ServiceError
 
 final case class EndpointResponse(
@@ -11,11 +11,9 @@ final case class EndpointResponse(
 )
 
 object EndpointResponse {
-  implicit val enddpointResponseEncoder: Encoder[EndpointResponse] =
-    Encoder.forProduct4(
-      "action",
-      "id",
-      "status",
-      "message"
-    ) { er => (er.action, er.schemaId, er.status, er.message) }
+
+  implicit val endpointResponseCodec =
+    Codec.forProduct4("action", "id", "status", "message")(EndpointResponse.apply) { er =>
+      (er.action, er.schemaId, er.status, er.message)
+    }
 }
