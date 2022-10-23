@@ -1,11 +1,11 @@
 package validator
 
 import cats.effect.IO
-import cats.syntax.applicativeError._
 import cats.syntax.applicative._
+import cats.syntax.applicativeError._
 import io.circe.Json
-import validator.model.errors.{InvalidJson, SchemaAlreadyExists, ServiceError}
 import validator.model._
+import validator.model.errors.{InvalidJson, SchemaAlreadyExists}
 import validator.persistence.SchemaPersistence
 import validator.service.{JsonParserService, SchemaValidationService, Service}
 
@@ -69,21 +69,7 @@ object Mocks {
         ): IO[EndpointResponse] = validate.pure[IO]
       }
 
-    def failing(err: ServiceError): Service[IO] = new Service[IO] {
-      override def createSchema(schemaId: SchemaId, schema: JsonSchemaRaw): IO[EndpointResponse] =
-        EndpointResponse(ActionType.UploadSchema, schemaId, Status.Error, Some(err)).pure[IO]
-
-      override def getJsonSchema(schemaId: SchemaId): IO[JsonSchema] =
-        err.raiseError[IO, JsonSchema]
-
-      override def validateJsonAgainstSchema(
-          json: JsonRaw,
-          schemaId: SchemaId
-      ): IO[EndpointResponse] =
-        EndpointResponse(ActionType.ValidateDocument, schemaId, Status.Error, Some(err)).pure[IO]
-    }
-
-    def failingHard(err: Throwable): Service[IO] = new Service[IO] {
+    def failing(err: Throwable): Service[IO] = new Service[IO] {
       override def createSchema(schemaId: SchemaId, schema: JsonSchemaRaw): IO[EndpointResponse] =
         IO.raiseError(err)
 
