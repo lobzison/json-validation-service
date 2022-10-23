@@ -5,13 +5,12 @@ import doobie.hikari.HikariTransactor
 import doobie.{ExecutionContexts, Transactor}
 import fly4s.core.Fly4s
 import fly4s.core.data.{Fly4sConfig, Location}
+import validator.model.config.DBConfig
 
-class DBImpl[F[_]: Async] extends DB[F] {
+class DBImpl[F[_]: Async](val config: DBConfig) {
 
-  protected val driver   = "org.sqlite.JDBC"
-  protected val user     = ""
-  protected val password = ""
-  protected val name     = "json-schemas".pure[F]
+  protected val driver = "org.sqlite.JDBC"
+  protected val name   = config.name.pure[F]
 
   def fileName(name: String) = s"$name.db"
 
@@ -27,15 +26,15 @@ class DBImpl[F[_]: Async] extends DB[F] {
     )
   )
 
-  override val transactor: Resource[F, Transactor[F]] =
+  val transactor: Resource[F, Transactor[F]] =
     for {
       dbName <- Resource.eval(name)
       ec     <- ExecutionContexts.fixedThreadPool[F](1)
       res <- HikariTransactor.newHikariTransactor[F](
         driver,
         url(dbName),
-        user,
-        password,
+        config.user,
+        config.password,
         ec
       )
       flyway <- fly4sRes(dbName)

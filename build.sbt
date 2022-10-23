@@ -8,6 +8,8 @@ lazy val root = (project in file("."))
     name := "json-validation-service",
     libraryDependencies := Seq(
       ce,
+      pureconfig,
+      pureconfigCats,
       munit % Test
     ) ++ jsonDependencies
       ++ dbDependencies

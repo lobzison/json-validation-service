@@ -3,11 +3,12 @@ import cats.effect.std.UUIDGen
 import cats.effect.{IO, Resource}
 import doobie._
 import doobie.hikari.HikariTransactor
+import validator.model.config.DBConfig
 
 import java.nio.file.{Files, Paths}
 import java.util.UUID
 
-object TestDB extends DBImpl[IO] {
+object TestDB extends DBImpl[IO](DBConfig("", "", "", "flyway", "db")) {
 
   private def cleanUpDBOnClose(name: String) = Resource.make(IO(fileName(name))) { name =>
     for {
@@ -28,8 +29,8 @@ object TestDB extends DBImpl[IO] {
       res <- HikariTransactor.newHikariTransactor[IO](
         driver,
         url(dbName),
-        user,
-        password,
+        config.user,
+        config.password,
         ec
       )
       flyway <- fly4sRes(dbName)

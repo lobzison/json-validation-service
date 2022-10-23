@@ -4,6 +4,9 @@ object Dependencies {
 
   lazy val munit = "org.typelevel" %% "munit-cats-effect-3" % "1.0.7"
   lazy val ce    = "org.typelevel" %% "cats-effect"         % "3.3.14"
+  lazy val pureconfigCats =
+    "com.github.pureconfig" %% "pureconfig-cats-effect" % Versions.pureconfigVersion
+  lazy val pureconfig = "com.github.pureconfig" %% "pureconfig" % Versions.pureconfigVersion
 
   object Database {
     lazy val sqlite       = "org.xerial"          % "sqlite-jdbc"   % "3.39.3.0"
@@ -27,9 +30,10 @@ object Dependencies {
   }
 
   object Versions {
-    lazy val doobieVersion = "1.0.0-RC2"
-    lazy val circeVersion  = "0.14.3"
-    lazy val httpVersion   = "1.0.0-M37"
+    lazy val doobieVersion     = "1.0.0-RC2"
+    lazy val circeVersion      = "0.14.3"
+    lazy val httpVersion       = "1.0.0-M37"
+    lazy val pureconfigVersion = "0.17.1"
   }
 
   lazy val httpDependencies = Seq(
