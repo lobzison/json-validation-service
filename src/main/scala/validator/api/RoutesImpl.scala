@@ -12,10 +12,9 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
     extends Routes[F]
     with Http4sDsl[F] {
 
-  // TODO: Add custom 404
-
   override def routes: HttpRoutes[F] =
     HttpRoutes.of[F] {
+
       case r @ POST -> Root / "schema" / schemaIdStr =>
         val schemaId = SchemaId(schemaIdStr)
         (for {
@@ -25,6 +24,7 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
           res      <- calculateResponseCode(response)
         } yield res)
           .handleErrorWith(errorHandler.handleErrors)
+
       case GET -> Root / "schema" / schemaIdStr =>
         val schemaId = SchemaId(schemaIdStr)
         (for {
@@ -32,6 +32,7 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
           res    <- Ok(schema.value)
         } yield res)
           .handleErrorWith(errorHandler.handleErrors)
+
       case r @ POST -> Root / "validate" / schemaIdStr =>
         val schemaId = SchemaId(schemaIdStr)
         (for {
@@ -41,6 +42,7 @@ class RoutesImpl[F[_]: Concurrent](service: Service[F], errorHandler: ErrorHandl
           res              <- calculateResponseCode(validationReport)
         } yield res)
           .handleErrorWith(errorHandler.handleErrors)
+
       case _ => notFound.pure[F]
     }
 

@@ -18,5 +18,4 @@ class ErrorHandler[F[_]: Console: Monad] extends Http4sDsl[F] {
         }
       Response[F](status = processedError.httpCode).withEntity(processedError).pure[F]
     }
-
 }

@@ -33,6 +33,7 @@ object Main extends IOApp.Simple {
           .mapF(_.getOrElse(routes.notFound))
       )
       .build
+      .evalTap(_ => IO.println("Server ready"))
       .useForever
   }
 }
